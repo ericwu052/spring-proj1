@@ -1,0 +1,44 @@
+package com.example.demo.resources;
+
+import com.example.demo.Constants;
+import com.example.demo.domain.User;
+import com.example.demo.services.AuthService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+public class AuthResource {
+
+    @Autowired
+    AuthService authService;
+
+    public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, Object> body) {
+        String phoneNumber = (String) body.get("phoneNumber");
+        String name = (String) body.get("name");
+        String password = (String) body.get("password");
+        User user = authService.registerUser(phoneNumber, name, password);
+        return new ResponseEntity<>(generateJWTToken(user), HttpStatus.OK);
+    }
+
+    public void login(@RequestBody Map<String, Object> body) {
+    }
+
+    private Map<String, String> generateJWTToken(User user) {
+        long timestamp = System.currentTimeMillis();
+        String token = Jwts.builder().signWith(SignatureAlgorithm.HS256, Constants.API_SECRET_KEY)
+                .setIssuedAt(new Date(timestamp))
+                .setExpiration(new Date(timestamp + Constants.TOKEN_VALIDITY))
+                .claim("phoneNumber", user.phoneNumber())
+                .compact();
+        Map<String, String> map = new HashMap<>();
+        map.put("token", token);
+        return map;
+    }
+}
