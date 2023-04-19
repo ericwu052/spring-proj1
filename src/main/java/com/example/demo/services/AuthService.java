@@ -3,6 +3,7 @@ package com.example.demo.services;
 import com.example.demo.domain.User;
 import com.example.demo.exceptions.MyAuthException;
 import com.example.demo.exceptions.MyBadRequestException;
+import com.example.demo.exceptions.MyResourceNotFoundException;
 import com.example.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class AuthService {
         return userRepository.findByPhoneAndPassword(phoneNumber, password);
     }
 
-    public User getUserByPhone(String phoneNumber) throws MyAuthException {
+    public User getUserByPhone(String phoneNumber) throws MyResourceNotFoundException {
         return userRepository.findByPhone(phoneNumber);
     }
 

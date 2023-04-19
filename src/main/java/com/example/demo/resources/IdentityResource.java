@@ -3,7 +3,9 @@ package com.example.demo.resources;
 import com.example.demo.domain.User;
 import com.example.demo.exceptions.MyAuthException;
 import com.example.demo.exceptions.MyBadRequestException;
+import com.example.demo.exceptions.MyResourceNotFoundException;
 import com.example.demo.inputs.UpdateNameInput;
+import com.example.demo.outputs.NameOutput;
 import com.example.demo.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -27,12 +29,10 @@ public class IdentityResource {
     @Operation(
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
-    public ResponseEntity<Map<String, String>> getName(HttpServletRequest request) throws MyAuthException {
+    public ResponseEntity<NameOutput> getName(HttpServletRequest request) throws MyResourceNotFoundException {
         String phone = (String) request.getAttribute("phoneNumber");
         User user = authService.getUserByPhone(phone);
-        Map<String, String> map = new HashMap<>();
-        map.put("name", user.name());
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        return new ResponseEntity<>(new NameOutput(user.name()), HttpStatus.OK);
     }
 
     @PutMapping("/name")

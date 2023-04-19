@@ -3,6 +3,7 @@ package com.example.demo.repositories;
 import com.example.demo.domain.User;
 import com.example.demo.exceptions.MyAuthException;
 import com.example.demo.exceptions.MyBadRequestException;
+import com.example.demo.exceptions.MyResourceNotFoundException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -38,12 +39,12 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public User findByPhone(String phoneNumber) throws MyAuthException {
+    public User findByPhone(String phoneNumber) throws MyResourceNotFoundException {
         try {
             return jdbcTemplate.queryForObject(SQL_FIND_BY_PHONE, userRowMapper, phoneNumber);
 
         } catch (EmptyResultDataAccessException e) {
-            throw new MyAuthException("phone not found");
+            throw new MyResourceNotFoundException("user with the given phone not found");
         }
     }
 
