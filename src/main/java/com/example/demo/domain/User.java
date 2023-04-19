@@ -2,5 +2,5 @@ package com.example.demo.domain;
 
 import jakarta.annotation.Nullable;
 
-public record User(Integer userId, String phoneNumber, String name, @Nullable String password, @Nullable String hashed_password) {
+public record User(Integer userId, String phoneNumber, String name, @Nullable String password, @Nullable String hashedPassword) {
 }

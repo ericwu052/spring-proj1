@@ -2,8 +2,10 @@ package com.example.demo.repositories;
 
 import com.example.demo.domain.User;
 import com.example.demo.exceptions.MyAuthException;
+import com.example.demo.exceptions.MyBadRequestException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,12 +19,47 @@ import java.sql.Statement;
 public class UserRepositoryJdbc implements UserRepository {
 
     private static final String SQL_COUNT_BY_PHONE = "SELECT COUNT(*) FROM users WHERE phone_number = ?";
-    private static final String SQL_CREATE = "INSERT INTO users(user_id,  phone_number, name, hashed_password) VALUES (NEXTVAL('users_seq'), ?, ?, ?)";
-    private static final String SQL_FIND_BY_ID = "SELECT user_id, phone_number, name, hashed_password " +
-            "FROM users WHERE user_id = ?";
+    private static final String SQL_CREATE = "INSERT INTO users(user_id,  phone_number, name, hashed_password) " +
+            "VALUES (NEXTVAL('users_seq'), ?, ?, ?)";
+    private static final String SQL_FIND_BY_ID = "SELECT user_id, phone_number, name, hashed_password FROM users WHERE user_id = ?";
+    private static final String SQL_FIND_BY_PHONE = "SELECT user_id, phone_number, name, hashed_password FROM users WHERE phone_number = ?";
+    public static final String SQL_UPDATE = "UPDATE users SET name = ? WHERE phoneNumber = ?";
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    @Override
+    public void updateNameByPhone(String phoneNumber, String name) throws MyBadRequestException {
+        try {
+            jdbcTemplate.update(SQL_UPDATE, name, phoneNumber);
+        } catch (Exception e) {
+            throw new MyBadRequestException("Invalid request");
+        }
+    }
+
+    @Override
+    public User findByPhone(String phoneNumber) throws MyAuthException {
+        try {
+            return jdbcTemplate.queryForObject(SQL_FIND_BY_PHONE, userRowMapper, phoneNumber);
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new MyAuthException("phone not found");
+        }
+    }
+
+    @Override
+    public User findByPhoneAndPassword(String phoneNumber, String password) throws MyAuthException {
+        try {
+            User user = jdbcTemplate.queryForObject(SQL_FIND_BY_PHONE, userRowMapper, phoneNumber);
+            if (!BCrypt.checkpw(password, user.hashedPassword()))
+                throw new MyAuthException("Invalid phone number or password");
+
+            return user;
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new MyAuthException("Invalid phone number or password");
+        }
+    }
 
     @Override
     public Integer getCountByPhone(String phoneNumber) {
