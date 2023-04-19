@@ -31,11 +31,14 @@ public class UserRepositoryJdbc implements UserRepository {
 
     @Override
     public void updateNameByPhone(String phoneNumber, String name) throws MyBadRequestException {
+        int affectedRows = 1;
         try {
-            jdbcTemplate.update(SQL_UPDATE, name, phoneNumber);
+            affectedRows = jdbcTemplate.update(SQL_UPDATE, name, phoneNumber);
         } catch (Exception e) {
             throw new MyBadRequestException("Invalid request");
         }
+        if (affectedRows == 0)
+            throw new MyBadRequestException("Phone number doesn't exist");
     }
 
     @Override

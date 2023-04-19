@@ -7,7 +7,6 @@ import com.example.demo.inputs.LoginInput;
 import com.example.demo.inputs.RegisterInput;
 import com.example.demo.services.AuthService;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,10 +42,11 @@ public class AuthResource {
 
     private Map<String, String> generateJWTToken(User user) {
         long timestamp = System.currentTimeMillis();
-        String token = Jwts.builder().signWith(SignatureAlgorithm.HS256, Constants.API_SECRET_KEY)
+        String token = Jwts.builder()
+                .setSubject(user.phoneNumber())
                 .setIssuedAt(new Date(timestamp))
                 .setExpiration(new Date(timestamp + Constants.TOKEN_VALIDITY))
-                .claim("phoneNumber", user.phoneNumber())
+                .signWith(Constants.keyPair.getPrivate())
                 .compact();
         Map<String, String> map = new HashMap<>();
         map.put("token", token);

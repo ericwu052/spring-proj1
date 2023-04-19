@@ -39,11 +39,12 @@ public class JWTFilter extends GenericFilterBean {
             if (authHeaderArr.length > 1 && authHeaderArr[1] != null) {
                 String token = authHeaderArr[1];
                 try {
-                    Claims claims = Jwts.parser()
-                            .setSigningKey(Constants.API_SECRET_KEY)
+                    Claims claims = Jwts.parserBuilder()
+                            .setSigningKey(Constants.keyPair.getPublic())
+                            .build()
                             .parseClaimsJws(token)
                             .getBody();
-                    httpRequest.setAttribute("phoneNumber", claims.get("phoneNumber").toString());
+                    httpRequest.setAttribute("phoneNumber", claims.getSubject());
 
                 } catch (Exception e) {
                     httpResponse.sendError(HttpStatus.FORBIDDEN.value(), "invalid/expired token");
