@@ -23,7 +23,7 @@ public class UserRepositoryJdbc implements UserRepository {
             "VALUES (NEXTVAL('users_seq'), ?, ?, ?)";
     private static final String SQL_FIND_BY_ID = "SELECT user_id, phone_number, name, hashed_password FROM users WHERE user_id = ?";
     private static final String SQL_FIND_BY_PHONE = "SELECT user_id, phone_number, name, hashed_password FROM users WHERE phone_number = ?";
-    public static final String SQL_UPDATE = "UPDATE users SET name = ? WHERE phoneNumber = ?";
+    public static final String SQL_UPDATE = "UPDATE users SET name = ? WHERE phone_number = ?";
 
     @Autowired
     JdbcTemplate jdbcTemplate;

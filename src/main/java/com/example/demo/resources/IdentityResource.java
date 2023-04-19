@@ -3,6 +3,7 @@ package com.example.demo.resources;
 import com.example.demo.domain.User;
 import com.example.demo.exceptions.MyAuthException;
 import com.example.demo.exceptions.MyBadRequestException;
+import com.example.demo.inputs.UpdateNameInput;
 import com.example.demo.services.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -38,10 +39,9 @@ public class IdentityResource {
     @Operation(
             security = {@SecurityRequirement(name = "BearerJWT")}
     )
-    public ResponseEntity<Map<String, Boolean>> updateName(HttpServletRequest request, @RequestBody Map<String, Object> body) throws MyBadRequestException {
+    public ResponseEntity<Map<String, Boolean>> updateName(HttpServletRequest request, @RequestBody UpdateNameInput updateNameInput) throws MyBadRequestException {
         String phone = (String) request.getAttribute("phoneNumber");
-        String name = (String) body.get("name");
-        authService.updateUserName(phone, name);
+        authService.updateUserName(phone, updateNameInput.name());
         Map<String, Boolean> map = new HashMap<>();
         map.put("success", true);
         return new ResponseEntity<>(map, HttpStatus.OK);
