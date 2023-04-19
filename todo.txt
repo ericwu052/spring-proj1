@@ -1,0 +1,1 @@
+1. Make the database have index on phone number and unique too.

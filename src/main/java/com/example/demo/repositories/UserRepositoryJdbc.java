@@ -3,22 +3,25 @@ package com.example.demo.repositories;
 import com.example.demo.domain.User;
 import com.example.demo.exceptions.MyAuthException;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
+@Repository
 public class UserRepositoryJdbc implements UserRepository {
 
-    private static final String SQL_COUNT_BY_PHONE = "SELECT user_id, phone_number, name, hashed_password " +
-            "FROM users WHERE phone_number = ?";
+    private static final String SQL_COUNT_BY_PHONE = "SELECT COUNT(*) FROM users WHERE phone_number = ?";
     private static final String SQL_CREATE = "INSERT INTO users(user_id,  phone_number, name, hashed_password) VALUES (NEXTVAL('users_seq'), ?, ?, ?)";
     private static final String SQL_FIND_BY_ID = "SELECT user_id, phone_number, name, hashed_password " +
             "FROM users WHERE user_id = ?";
 
+    @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Override
@@ -51,7 +54,7 @@ public class UserRepositoryJdbc implements UserRepository {
     private final RowMapper<User> userRowMapper = ((rs, rowNum) -> new User(
             rs.getInt("user_id"),
             rs.getString("name"),
-            rs.getString("email"),
+            rs.getString("phone_number"),
             null,
             rs.getString("hashed_password")
     ));
