@@ -28,14 +28,12 @@ public class AuthResource {
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody RegisterInput registerInput) throws MyAuthException {
-        // TODO validate phone number
         User user = authService.registerUser(registerInput.phoneNumber(), registerInput.name(), registerInput.password());
         return new ResponseEntity<>(generateJWTToken(user), HttpStatus.OK);
     }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginInput loginInput) {
-        // TODO validate phone number
         User user = authService.validateUser(loginInput.phoneNumber(), loginInput.password());
         return new ResponseEntity<>(generateJWTToken(user), HttpStatus.OK);
     }
