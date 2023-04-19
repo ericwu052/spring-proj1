@@ -19,7 +19,7 @@ import java.sql.Statement;
 public class UserRepositoryJdbc implements UserRepository {
 
     private static final String SQL_COUNT_BY_PHONE = "SELECT COUNT(*) FROM users WHERE phone_number = ?";
-    private static final String SQL_CREATE = "INSERT INTO users(user_id,  phone_number, name, hashed_password) " +
+    private static final String SQL_CREATE = "INSERT INTO users(user_id, phone_number, name, hashed_password) " +
             "VALUES (NEXTVAL('users_seq'), ?, ?, ?)";
     private static final String SQL_FIND_BY_ID = "SELECT user_id, phone_number, name, hashed_password FROM users WHERE user_id = ?";
     private static final String SQL_FIND_BY_PHONE = "SELECT user_id, phone_number, name, hashed_password FROM users WHERE phone_number = ?";
@@ -90,8 +90,8 @@ public class UserRepositoryJdbc implements UserRepository {
 
     private final RowMapper<User> userRowMapper = ((rs, rowNum) -> new User(
             rs.getInt("user_id"),
-            rs.getString("name"),
             rs.getString("phone_number"),
+            rs.getString("name"),
             null,
             rs.getString("hashed_password")
     ));

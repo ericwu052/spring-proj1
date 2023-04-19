@@ -3,6 +3,8 @@ package com.example.demo.resources;
 import com.example.demo.Constants;
 import com.example.demo.domain.User;
 import com.example.demo.exceptions.MyAuthException;
+import com.example.demo.inputs.LoginInput;
+import com.example.demo.inputs.RegisterInput;
 import com.example.demo.services.AuthService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,21 +28,16 @@ public class AuthResource {
     AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody Map<String, Object> body) throws MyAuthException {
-        String phoneNumber = (String) body.get("phoneNumber");
-        String name = (String) body.get("name");
-        String password = (String) body.get("password");
+    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterInput registerInput) throws MyAuthException {
         // TODO validate phone number
-        User user = authService.registerUser(phoneNumber, name, password);
+        User user = authService.registerUser(registerInput.phoneNumber(), registerInput.name(), registerInput.password());
         return new ResponseEntity<>(generateJWTToken(user), HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, Object> body) {
-        String phoneNumber = (String) body.get("phoneNumber");
-        String password = (String) body.get("password");
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginInput loginInput) {
         // TODO validate phone number
-        User user = authService.validateUser(phoneNumber, password);
+        User user = authService.validateUser(loginInput.phoneNumber(), loginInput.password());
         return new ResponseEntity<>(generateJWTToken(user), HttpStatus.OK);
     }
 
