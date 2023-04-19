@@ -8,7 +8,7 @@ import com.example.demo.exceptions.MyResourceNotFoundException;
 public interface UserRepository {
     Integer getCountByPhone(String phoneNumber);
 
-    Integer create(String phoneNumber, String name, String password) throws MyAuthException;
+    Integer create(String phoneNumber, String name, String hashedPassword) throws MyAuthException;
 
     User findById(Integer userId);
     User findByPhoneAndPassword(String phoneNumber, String password);

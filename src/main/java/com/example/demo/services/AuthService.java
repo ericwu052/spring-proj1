@@ -5,6 +5,7 @@ import com.example.demo.exceptions.MyAuthException;
 import com.example.demo.exceptions.MyBadRequestException;
 import com.example.demo.exceptions.MyResourceNotFoundException;
 import com.example.demo.repositories.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,8 @@ public class AuthService {
         if (count > 0)
             throw new MyAuthException("phone number already in use");
 
-        Integer userId = userRepository.create(phoneNumber, name, password);
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
+        Integer userId = userRepository.create(phoneNumber, name, hashedPassword);
         return userRepository.findById(userId);
     }
 

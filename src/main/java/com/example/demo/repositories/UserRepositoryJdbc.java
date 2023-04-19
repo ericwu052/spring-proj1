@@ -71,8 +71,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public Integer create(String phoneNumber, String name, String password) throws MyAuthException {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
+    public Integer create(String phoneNumber, String name, String hashedPassword) throws MyAuthException {
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {

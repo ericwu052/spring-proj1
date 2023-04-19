@@ -1,5 +1,6 @@
 package com.example.demo.inputs;
 
+import com.example.demo.Constants;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -11,13 +12,13 @@ import jakarta.validation.constraints.Size;
  */
 public record RegisterInput(
         @Size(min = 10, max = 13)
-        @Pattern(regexp = "08\\d+")
+        @Pattern(regexp = Constants.INDONESIAN_PHONE_REGEX)
         String phoneNumber,
         @NotEmpty
         String name,
         @Size(min = 6, max = 16)
-        @Pattern(regexp = ".*\\d.*") // at least 1 digit
-        @Pattern(regexp = ".*[A-Z],*") // at least 1 capital letter
+        @Pattern(regexp = Constants.ONE_DIGIT_REGEX) // at least 1 digit
+        @Pattern(regexp = Constants.ONE_UPPERCASE_REGEX) // at least 1 capital letter
         String password
 ) {
 }
