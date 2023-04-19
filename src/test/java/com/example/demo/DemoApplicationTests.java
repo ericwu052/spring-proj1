@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.exceptions.MyResourceNotFoundException;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.AuthService;
 import org.junit.jupiter.api.Test;
@@ -46,5 +47,23 @@ public class DemoApplicationTests {
     public void userLogin_working() {
         authService.validateUser("081234567890", "password1");
         verify(userRepository).findByPhoneAndPassword("081234567890", "password1");
+    }
+
+    /**
+     * get name should find user's name by phone.
+     */
+    @Test
+    public void getName_working() throws MyResourceNotFoundException {
+        authService.getUserByPhone("081234567890");
+        verify(userRepository).findByPhone("081234567890");
+    }
+
+    /**
+     * Update name should update name by phone
+     */
+    @Test
+    public void updateName_working() {
+        authService.updateUserName("081234567890", "Name 1");
+        verify(userRepository).updateNameByPhone("081234567890", "Name 1");
     }
 }
