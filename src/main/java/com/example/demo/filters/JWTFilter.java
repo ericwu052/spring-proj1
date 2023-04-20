@@ -9,7 +9,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -21,8 +20,11 @@ import java.io.IOException;
  */
 public class JWTFilter extends GenericFilterBean {
 
-    @Autowired
     KeyRepository keyRepository;
+
+    public JWTFilter(KeyRepository keyRepository) {
+        this.keyRepository = keyRepository;
+    }
 
     /**
      * Put the phone number to request attribute if the JWT is valid.

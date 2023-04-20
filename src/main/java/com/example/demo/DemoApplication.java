@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.filters.JWTFilter;
+import com.example.demo.repositories.KeyRepository;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.boot.SpringApplication;
@@ -25,9 +26,9 @@ public class DemoApplication {
      * Protect identity resource with JWTFilter.
      */
     @Bean
-    public FilterRegistrationBean<JWTFilter> filterRegistrationBean() {
+    public FilterRegistrationBean<JWTFilter> filterRegistrationBean(KeyRepository keyRepository) {
         FilterRegistrationBean<JWTFilter> registrationBean = new FilterRegistrationBean<>();
-        JWTFilter authFilter = new JWTFilter();
+        JWTFilter authFilter = new JWTFilter(keyRepository);
         registrationBean.setFilter(authFilter);
         registrationBean.addUrlPatterns("/api/user/*");
         return registrationBean;

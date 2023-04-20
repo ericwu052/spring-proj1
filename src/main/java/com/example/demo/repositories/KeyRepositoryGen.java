@@ -11,8 +11,11 @@ import java.security.KeyPair;
  */
 @Repository
 public class KeyRepositoryGen implements KeyRepository {
+
+    private final KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
+
     @Override
     public KeyPair getKeyPair() {
-        return Keys.keyPairFor(SignatureAlgorithm.RS256);
+        return keyPair;
     }
 }

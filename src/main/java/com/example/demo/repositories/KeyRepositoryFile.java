@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
@@ -19,10 +20,18 @@ import java.security.spec.X509EncodedKeySpec;
 @Primary
 public class KeyRepositoryFile implements KeyRepository {
 
-    @Override
-    public KeyPair getKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException, IOException, InvalidKeySpecException {
+    private KeyPair keyPair;
 
-        KeyFactory keyFactory = KeyFactory.getInstance("DSA", "SUN");
+    @Override
+    public KeyPair getKeyPair() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        if (keyPair == null) {
+            keyPair = readKeyPair();
+        }
+        return keyPair;
+    }
+
+    private KeyPair readKeyPair() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
         PublicKey publicKey;
         try (FileInputStream publicKeyFis = new FileInputStream(publicKeyFilename)) {
@@ -34,8 +43,8 @@ public class KeyRepositoryFile implements KeyRepository {
         PrivateKey privateKey;
         try (FileInputStream privateKeyFis = new FileInputStream(privateKeyFilename)) {
             byte[] privateKeyBytes = privateKeyFis.readAllBytes();
-            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(privateKeyBytes);
-            privateKey = keyFactory.generatePrivate(pubKeySpec);
+            PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            privateKey = keyFactory.generatePrivate(privKeySpec);
         }
 
         return new KeyPair(publicKey, privateKey);
