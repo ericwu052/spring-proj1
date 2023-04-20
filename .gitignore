@@ -1,3 +1,8 @@
+# Secrets
+/secrets/
+/publicKey
+/privateKey
+
 HELP.md
 .gradle
 build/

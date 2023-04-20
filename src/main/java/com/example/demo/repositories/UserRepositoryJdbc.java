@@ -51,6 +51,9 @@ public class UserRepositoryJdbc implements UserRepository {
         }
     }
 
+    /**
+     * Used for login
+     */
     @Override
     public User findByPhoneAndPassword(String phoneNumber, String password) throws MyAuthException {
         try {
@@ -71,7 +74,7 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
     @Override
-    public Integer create(String phoneNumber, String name, String hashedPassword) throws MyAuthException {
+    public Integer create(String phoneNumber, String name, String hashedPassword) throws MyBadRequestException {
         try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
@@ -83,7 +86,7 @@ public class UserRepositoryJdbc implements UserRepository {
             }, keyHolder);
             return (Integer) keyHolder.getKeys().get("user_id");
         } catch (Exception e) {
-            throw new MyAuthException("Invalid details. Failed to create account");
+            throw new MyBadRequestException("Invalid details. Failed to create account");
         }
     }
 

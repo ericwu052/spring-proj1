@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.exceptions.MyAuthException;
+import com.example.demo.exceptions.MyBadRequestException;
 import com.example.demo.exceptions.MyResourceNotFoundException;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.AuthService;
@@ -29,7 +31,7 @@ public class DemoApplicationTests {
      * register user should store stuff in database with hashedPassword
      */
     @Test
-    public void userRegistration_working() {
+    public void userRegistration_working() throws MyBadRequestException {
         String password = "password1";
 
         authService.registerUser("081234567890", "Name 1", password);
@@ -44,7 +46,7 @@ public class DemoApplicationTests {
      * User login should find user by phone number and password.
      */
     @Test
-    public void userLogin_working() {
+    public void userLogin_working() throws MyAuthException {
         authService.validateUser("081234567890", "password1");
         verify(userRepository).findByPhoneAndPassword("081234567890", "password1");
     }
@@ -62,7 +64,7 @@ public class DemoApplicationTests {
      * Update name should update name by phone
      */
     @Test
-    public void updateName_working() {
+    public void updateName_working() throws MyBadRequestException {
         authService.updateUserName("081234567890", "Name 1");
         verify(userRepository).updateNameByPhone("081234567890", "Name 1");
     }

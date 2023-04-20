@@ -15,17 +15,17 @@ public class AuthService {
     @Autowired
     UserRepository userRepository;
 
-    public User registerUser(String phoneNumber, String name, String password) throws MyAuthException {
+    public User registerUser(String phoneNumber, String name, String password) throws MyBadRequestException {
         Integer count = userRepository.getCountByPhone(phoneNumber);
         if (count > 0)
-            throw new MyAuthException("phone number already in use");
+            throw new MyBadRequestException("phone number already in use");
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
         Integer userId = userRepository.create(phoneNumber, name, hashedPassword);
         return userRepository.findById(userId);
     }
 
-    public User validateUser(String phoneNumber, String password) {
+    public User validateUser(String phoneNumber, String password) throws MyAuthException {
         return userRepository.findByPhoneAndPassword(phoneNumber, password);
     }
 

@@ -1,6 +1,6 @@
 package com.example.demo.filters;
 
-import com.example.demo.Constants;
+import com.example.demo.repositories.KeyRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -9,6 +9,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -19,6 +20,9 @@ import java.io.IOException;
  * This filter also checks whether the given JWT is valid.
  */
 public class JWTFilter extends GenericFilterBean {
+
+    @Autowired
+    KeyRepository keyRepository;
 
     /**
      * Put the phone number to request attribute if the JWT is valid.
@@ -40,7 +44,7 @@ public class JWTFilter extends GenericFilterBean {
                 String token = authHeaderArr[1];
                 try {
                     Claims claims = Jwts.parserBuilder()
-                            .setSigningKey(Constants.keyPair.getPublic())
+                            .setSigningKey(keyRepository.getKeyPair().getPublic())
                             .build()
                             .parseClaimsJws(token)
                             .getBody();
