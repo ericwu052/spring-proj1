@@ -2,6 +2,8 @@ package com.example.demo.resources;
 
 import com.example.demo.Constants;
 import com.example.demo.domain.User;
+import com.example.demo.domain.ValidationFailed;
+import com.example.demo.domain.ValidationResult;
 import com.example.demo.exceptions.MyAuthException;
 import com.example.demo.exceptions.MyBadRequestException;
 import com.example.demo.inputs.LoginInput;
@@ -10,8 +12,8 @@ import com.example.demo.outputs.MessageOutput;
 import com.example.demo.outputs.TokenOutput;
 import com.example.demo.repositories.KeyRepository;
 import com.example.demo.services.AuthService;
+import com.example.demo.services.ValidationService;
 import io.jsonwebtoken.Jwts;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +36,13 @@ public class AuthResource {
     @Autowired KeyRepository keyRepository;
 
     @PostMapping("/register")
-    public ResponseEntity<MessageOutput> register(@Valid @RequestBody RegisterInput registerInput) throws MyBadRequestException {
-        authService.registerUser(registerInput.phoneNumber, registerInput.name, registerInput.password);
+    public ResponseEntity<MessageOutput> register(ValidationService validationService, @RequestBody RegisterInput registerInput) throws MyBadRequestException {
+        ValidationResult validationResult = validationService.validateRegisterInput(registerInput);
+        if (validationResult instanceof ValidationFailed) {
+            throw new MyBadRequestException(((ValidationFailed) validationResult).getErrorString());
+        }
+
+        authService.registerUser(registerInput.phoneNumber(), registerInput.name(), registerInput.password());
         return new ResponseEntity<>(new MessageOutput("success"), HttpStatus.OK);
     }
 
