@@ -10,7 +10,7 @@ ALTER DEFAULT PRIVILEGES GRANT ALL ON sequences TO springproj1;
 CREATE TABLE users(
 user_id INTEGER PRIMARY KEY NOT NULL,
 name VARCHAR(60) NOT NULL,
-phone_number VARCHAR(13) NOT NULL,
+phone_number VARCHAR(13) NOT NULL UNIQUE,
 hashed_password TEXT NOT NULL
 );
 

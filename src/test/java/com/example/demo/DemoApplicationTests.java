@@ -32,7 +32,7 @@ public class DemoApplicationTests {
      */
     @Test
     public void userRegistration_working() throws MyBadRequestException {
-        String password = "password1";
+        String password = "password1A";
 
         authService.registerUser("081234567890", "Name 1", password);
 

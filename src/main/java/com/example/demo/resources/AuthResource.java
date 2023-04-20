@@ -35,9 +35,10 @@ public class AuthResource {
 
     @Autowired AuthService authService;
     @Autowired KeyRepositoryFactory keyRepositoryFactory;
+    @Autowired ValidationService validationService;
 
     @PostMapping("/register")
-    public ResponseEntity<MessageOutput> register(ValidationService validationService, @RequestBody RegisterInput registerInput) throws MyBadRequestException {
+    public ResponseEntity<MessageOutput> register(@RequestBody RegisterInput registerInput) throws MyBadRequestException {
         ValidationResult validationResult = validationService.validateRegisterInput(registerInput);
         if (validationResult instanceof ValidationFailed) {
             throw new MyBadRequestException(((ValidationFailed) validationResult).getErrorString());
