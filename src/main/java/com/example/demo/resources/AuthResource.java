@@ -12,6 +12,7 @@ import com.example.demo.outputs.MessageOutput;
 import com.example.demo.outputs.TokenOutput;
 import com.example.demo.repositories.KeyRepository;
 import com.example.demo.services.AuthService;
+import com.example.demo.services.KeyRepositoryFactory;
 import com.example.demo.services.ValidationService;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ import java.util.Date;
 public class AuthResource {
 
     @Autowired AuthService authService;
-    @Autowired KeyRepository keyRepository;
+    @Autowired KeyRepositoryFactory keyRepositoryFactory;
 
     @PostMapping("/register")
     public ResponseEntity<MessageOutput> register(ValidationService validationService, @RequestBody RegisterInput registerInput) throws MyBadRequestException {
@@ -55,6 +56,7 @@ public class AuthResource {
     private String generateJWTToken(User user) {
         long timestamp = System.currentTimeMillis();
         try {
+            KeyRepository keyRepository = keyRepositoryFactory.getKeyRepository();
             return Jwts.builder()
                     .setSubject(user.phoneNumber())
                     .setIssuedAt(new Date(timestamp))

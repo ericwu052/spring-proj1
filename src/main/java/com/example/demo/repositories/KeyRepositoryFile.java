@@ -17,7 +17,6 @@ import java.security.spec.X509EncodedKeySpec;
  * - privateKey: private key raw format
  */
 @Repository
-@Primary
 public class KeyRepositoryFile implements KeyRepository {
 
     private KeyPair keyPair;
